@@ -52,6 +52,16 @@ on:
         description: "Package formats (comma-separated: deb,appimage,rpm)"
         required: false
         default: "deb"
+      tray:
+        description: "Display the application in system tray"
+        required: false
+        type: boolean
+        default: false
+      hide:
+        description: "Hide window instead of closing the application when clicking close button"
+        required: false
+        type: boolean
+        default: false
 
 jobs:
   build:
@@ -126,6 +136,14 @@ jobs:
 
           if [ -n "${{ inputs.targets }}" ] && [ "${{ runner.os }}" == "Linux" ]; then
             ARGS="$ARGS --targets ${{ inputs.targets }}"
+          fi
+
+          if [ "${{ inputs.tray }}" == "true" ]; then
+            ARGS="$ARGS --show-system-tray"
+          fi
+
+          if [ "${{ inputs.hide }}" == "true" ]; then
+            ARGS="$ARGS --hide-on-close"
           fi
 
           echo "Running: node dist/cli.js $ARGS"
